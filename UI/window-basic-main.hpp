@@ -758,7 +758,7 @@ public:
 	void CreateAgoraRemoteVideo();
 	void CreateRemoteVideos();
 	void DestroyRemoteVideos();
-	void UpdateAgoraClientRole(int role);// 1 »ò2
+	void UpdateAgoraClientRole(int role);// 1 ï¿½ï¿½2
 	void UpdateAgoraLogPath(std::string filePath);//valid path utf-8
 private:
 	void SetControlWhenPK(bool bPK);
@@ -784,6 +784,7 @@ private:
 	uint32_t loacal_uid = 0;
 	std::string agora_channel = "agora-obs-channel";
 	std::string agora_appid = "";
+	std::string agora_token = "";
 	uint32_t input_uid = 0;
 	std::map<unsigned int, QWidget*> m_mapUidWidget;
 private slots:

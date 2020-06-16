@@ -1253,6 +1253,7 @@ bool OBSBasic::InitBasicConfigDefaults()
 	//add by agora
 	config_set_default_string(basicConfig, "General", "agora_channel", agora_channel.c_str());
 	config_set_default_int(basicConfig, "General", "agora_appid", 0);
+	config_set_default_int(basicConfig, "General", "agora_token", 0);
 	return true;
 }
 
@@ -5793,9 +5794,11 @@ void OBSBasic::UpdateTitleBar()
 	if (previewProgramMode)
 		name << "Studio ";
 
-	name << App()->GetVersionString();
-	if (App()->IsPortableMode())
-		name << " - Portable Mode";
+	// name << App()->GetVersionString();
+	// if (App()->IsPortableMode())
+	// 	name << " - Portable Mode";
+
+	name << " For Music Champ";
 
 	name << " - " << Str("TitleBar.Profile") << ": " << profile;
 	name << " - " << Str("TitleBar.Scenes") << ": " << sceneCollection;
@@ -6281,6 +6284,7 @@ void OBSBasic::InitAgoraServiceSettings()
 	obs_data_set_int(settings, "agora_uid", loacal_uid);
 	obs_data_set_string(settings, "agora_channel", agora_channel.c_str());
 	obs_data_set_string(settings, "agora_appid", agora_appid.c_str());
+	obs_data_set_string(settings, "agora_token", agora_token.c_str());
 	obs_data_set_bool(settings, "enableWebSdkInteroperability", true);//允许与websdk互通
 
 
@@ -6331,6 +6335,7 @@ void OBSBasic::on_agoraPKButton_clicked()
         loacal_uid = agoraWidget.uid;
         agora_channel = agoraWidget.channel;
         agora_appid = agoraWidget.app_id;
+        agora_token = agoraWidget.token;
 
         InitAgoraServiceSettings();
 
@@ -6556,13 +6561,13 @@ void OBSBasic::OnInitRtcEngineFailed(long long code)
 {
 	if (code == -1){//aapid涓虹┖
 		OBSMessageBox::information(this,
-			QString("Agora"),
+			QString("MC"),
 			QString("Appid Is Empty"));
 	}
 	else if (code == -2){//initengine澶辫触
 		OBSMessageBox::information(this,
-			QString("Agora"),
-			QString("Init Agora Engine Failed"));
+			QString("MC"),
+			QString("Init MC Engine Failed"));
 	}
 	SetControlWhenPK(false);
 	//SetPreviewPK(false);

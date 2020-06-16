@@ -5,6 +5,7 @@
 struct agora_data
 {
 	char* agora_appid;
+	char* agora_token;
     long long uid;
 	char* publish_url, *key, *channel_name;
 	int out_cx, out_cy;
@@ -32,6 +33,9 @@ void AgoraService_Update(void *data, obs_data_t *settings)
 	if (service->agora_appid)
 		bfree(service->agora_appid);
 
+	if (service->agora_token)
+		bfree(service->agora_token);
+
 	if (service->channel_name)
 		bfree(service->channel_name);
 
@@ -43,6 +47,7 @@ void AgoraService_Update(void *data, obs_data_t *settings)
 	
 	service->uid          = obs_data_get_int(settings, "agora_uid");
 	service->agora_appid = bstrdup(obs_data_get_string(settings, "agora_appid"));//app_id
+	service->agora_token = bstrdup(obs_data_get_string(settings, "agora_token"));
 	service->publish_url  = bstrdup(obs_data_get_string(settings, "agora_url"));
 	service->key          = bstrdup(obs_data_get_string(settings, "agora_key"));
 	service->channel_name = bstrdup(obs_data_get_string(settings, "agora_channel"));
@@ -60,13 +65,13 @@ void AgoraService_Update(void *data, obs_data_t *settings)
 	bool agora_sdk_capture_mic_audio = obs_data_get_bool(settings, "agora_sdk_capture_mic_audio");
 	AgoraRtcEngine::GetInstance()->agora_sdk_captrue_mic_audio = agora_sdk_capture_mic_audio;
 	
-	if (!AgoraRtcEngine::GetInstance()->bInit && service->agora_sdk_capture_mic_audio != agora_sdk_capture_mic_audio){//ÒÑ¾­³õÊ¼»¯
+	if (!AgoraRtcEngine::GetInstance()->bInit && service->agora_sdk_capture_mic_audio != agora_sdk_capture_mic_audio){//ï¿½Ñ¾ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
 		AgoraRtcEngine::GetInstance()->EnableAgoraCaptureMicAudio(agora_sdk_capture_mic_audio);
 	}
 
 	agora::rtc::CLIENT_ROLE_TYPE role = (agora::rtc::CLIENT_ROLE_TYPE)obs_data_get_int(settings, "agora_client_role");	
 	//role
-	if (AgoraRtcEngine::GetInstance()->bInit && service->client_role != role){//ÒÑ¾­³õÊ¼»¯
+	if (AgoraRtcEngine::GetInstance()->bInit && service->client_role != role){//ï¿½Ñ¾ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
 		AgoraRtcEngine::GetInstance()->setClientRole(role);
 	}
 	service->client_role = role;
@@ -103,6 +108,7 @@ void  AgoraService_Destroy(void *data)
 	struct agora_data* service = static_cast<struct agora_data*>(data);
 	AgoraRtcEngine::GetInstance()->ReleaseInstance();
 	bfree(service->agora_appid);
+	bfree(service->agora_token);
 	bfree(service->channel_name);
 	bfree(service->publish_url);
 	bfree(service->key);
@@ -136,7 +142,7 @@ void AgoraService_Activate(void *data, obs_data_t *settings)
 	agora_engine->EnableWebSdkInteroperability(service_data->enableWebSdkInteroperability);
 	agora_engine->setVideoProfileEx(service_data->out_cx, service_data->out_cy, service_data->fps, service_data->video_bitrate);
 	agora_engine->setRecordingAudioFrameParameters(/*44100, 2*/service_data->sample_rate, service_data->audio_channel, 1024 );//agora_pcm_encoder
-	agora_engine->joinChannel("", service_data->channel_name, service_data->uid);
+	agora_engine->joinChannel(service_data->agora_token, service_data->channel_name, service_data->uid);
 }
 
 void AgoraService_Deactivate(void *data)

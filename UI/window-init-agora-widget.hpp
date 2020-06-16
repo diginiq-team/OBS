@@ -24,4 +24,5 @@ public:
 	OBSBasic* main;
 	uint32_t uid = 0;
 	std::string channel;
+	std::string token;
 };
